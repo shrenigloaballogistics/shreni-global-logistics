@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://jrjbohwnioarjcjwaqul.supabase.co https://photon.komoot.io https://api.postalpincode.in; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.paypal.com https://www.paypalobjects.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.paypalobjects.com; connect-src https://jrjbohwnioarjcjwaqul.supabase.co https://www.paypal.com https://www.sandbox.paypal.com https://photon.komoot.io https://api.postalpincode.in; object-src 'none'; frame-src https://www.paypal.com https://www.sandbox.paypal.com; base-uri 'self'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 
 <meta charset="UTF-8">
@@ -110,6 +110,7 @@ a{color:var(--g2)}
     <input id="fC" list="cl" placeholder="Country / देश">
     <input id="fQ" placeholder="Search product / माल खोजें">
   </div>
+  <div id="mc" style="margin-bottom:18px"></div>
   <div id="ls"></div>
 </section>
 
@@ -133,6 +134,9 @@ a{color:var(--g2)}
     <li>Information you give must be true. Accounts with false information may be closed.</li>
     <li>Records may be kept to investigate fraud or disputes.</li>
     <li>There is no guarantee for deals made outside the platform.</li>
+    <li>Chat messages between users are saved and may be reviewed by Shreni to investigate fraud or disputes.</li>
+    <li>Each user pays a $2 fee after both agree. When both have agreed and paid, the deal is confirmed. The fee is non-refundable once the deal is confirmed.</li>
+    <li>Payment, chat and account records are kept as proof in case of fraud. Shreni does not guarantee the goods, payment or conduct of any user.</li>
   </ol>
   <ol class="hi">
     <li>यह वेबसाइट सिर्फ़ मिलान (matchmaking) का काम करती है। यहाँ सारी निजी जानकारी छिपी रहती है। श्रेणी सिर्फ़ खरीदार और विक्रेता को मिलवाने का मंच है, किसी सौदे का पक्ष नहीं है।</li>
@@ -140,6 +144,9 @@ a{color:var(--g2)}
     <li>आपकी दी हुई जानकारी सही होनी चाहिए। झूठी जानकारी पर अकाउंट बंद किया जा सकता है।</li>
     <li>धोखाधड़ी या विवाद की जाँच के लिए रिकॉर्ड रखे जा सकते हैं।</li>
     <li>प्लेटफ़ॉर्म से बाहर होने वाले सौदों की कोई गारंटी नहीं है।</li>
+    <li>यूज़र्स की चैट सेव होती है और धोखाधड़ी या विवाद की जाँच के लिए श्रेणी उसे देख सकती है।</li>
+    <li>दोनों के सहमत होने पर हर यूज़र $2 देता है। दोनों के सहमति और भुगतान करते ही डील पक्की मानी जाती है। डील पक्की होने के बाद यह फ़ीस वापस नहीं होती।</li>
+    <li>धोखाधड़ी की स्थिति में सबूत के तौर पर भुगतान, चैट और अकाउंट का रिकॉर्ड रखा जाता है। श्रेणी किसी यूज़र के माल, भुगतान या व्यवहार की गारंटी नहीं देती।</li>
   </ol>
 </section>
 
@@ -181,6 +188,14 @@ a{color:var(--g2)}
     <button class="btn gh" id="cM" style="width:100%;margin-top:8px">Close / बंद करें</button>
   </div>
 </div>
+<div class="md" id="dm" role="dialog" aria-modal="true"><div class="card" style="max-width:560px">
+  <h3 id="dT" style="margin-top:0"></h3><div class="mt" id="dI"></div><p id="dD" style="color:var(--mu)"></p>
+  <div id="cb" style="background:var(--n);border:1px solid var(--ln);border-radius:6px;height:230px;overflow:auto;padding:10px;margin:12px 0"></div>
+  <div style="display:flex;gap:8px"><input id="cI" maxlength="2000" aria-label="Message"><button class="btn" id="cS">Send / भेजें</button></div>
+  <button class="btn" id="ag" style="width:100%;margin-top:12px">Agree with Deal / डील पर सहमत</button>
+  <div class="ms" id="dS"></div><div id="pp" style="margin-top:10px"></div><div class="ms" id="dMs" role="status"></div>
+  <button class="btn gh" id="dX" style="width:100%;margin-top:8px">Close / बंद करें</button>
+</div></div>
 <datalist id="cl"></datalist>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -282,7 +297,7 @@ $('sP').onclick=async()=>{
 };
 $('fg').onclick=e=>{e.preventDefault();setMode('reset');ms($('aM'),t('Enter your email. We will send a code.','ईमेल डालें। हम कोड भेजेंगे।'))};
 $('uc').onclick=e=>{e.preventDefault();setMode('code')};
-function setUser(u){user=u;$('app').classList.toggle('x',!u);$('nIn').classList.toggle('x',!!u);$('nOut').classList.toggle('x',!u);if(u)load()}
+function setUser(u){user=u;$('app').classList.toggle('x',!u);$('nIn').classList.toggle('x',!!u);$('nOut').classList.toggle('x',!u);if(u){load();loadChats()}}
 $('pB').onclick=async()=>{
   const r={user_id:user.id,trade_type:$('pT').value,product:$('pP').value.trim(),quantity:$('pQ').value.trim(),price:$('pR').value.trim(),country:$('pC').value.trim(),trade_terms:$('pM').value,details:$('pD').value.trim(),status:'active'};
   if(!r.product||!r.quantity||!r.country)return ms($('pMs'),t('Fill product, quantity and country.','माल, मात्रा और देश भरें।'),1);
@@ -297,9 +312,48 @@ async function load(){
 function render(){setSO();
   const a=$('fT').value,c=$('fC').value.trim().toLowerCase(),q=$('fQ').value.trim().toLowerCase();
   const rows=all.filter(r=>(!a||r.trade_type===a)&&(!c||(r.country||'').toLowerCase().includes(c))&&(!q||(r.product||'').toLowerCase().includes(q)));
-  $('ls').innerHTML=rows.length?rows.map(r=>`<div class="it"><span class="tg">${r.trade_type==='export'?t('Exporting','निर्यात'):t('Importing','आयात')}</span><h3 style="margin:8px 0 2px">${esc(r.product)}</h3><div class="mt">${esc(r.quantity)} · ${esc(r.price)} · ${esc(r.country)} · ${esc(r.trade_terms)}</div><p>${esc(r.details)}</p></div>`).join(''):`<p class="mt">${t('Nothing yet. Post the first one.','अभी कुछ नहीं। पहला आप डालें।')}</p>`;
+  $('ls').innerHTML=rows.length?rows.map(r=>`<div class="it"><span class="tg">${r.trade_type==='export'?t('Exporting','निर्यात'):t('Importing','आयात')}</span><h3 style="margin:8px 0 2px">${esc(r.product)}</h3><div class="mt">${esc(r.quantity)} · ${esc(r.price)} · ${esc(r.country)} · ${esc(r.trade_terms)}</div><p>${esc(r.details)}</p><div class="mt">${t('By','द्वारा')} ${esc(r.poster_name||'')} (${esc(r.poster_country||'')})</div><button class="btn" data-open="${esc(r.id)}">${t('Open / Chat','खोलें / चैट')}</button></div>`).join(''):`<p class="mt">${t('Nothing yet. Post the first one.','अभी कुछ नहीं। पहला आप डालें।')}</p>`;
 }
 ['fT','fC','fQ'].forEach(i=>$(i).oninput=render);
+
+const PPID='BAANebVa4RwwyrjAAiOrRdCv4bSWGsdqSGNtfXgbYl2sH4D5F-HAtV8EJQPwsVMUenZWizJ71tKssK0lHA';
+let cv=null,tm=null,ppOn=false,nm=0;
+async function fn(a,b){const{data:{session}}=await db.auth.getSession();
+  const r=await fetch(SUPABASE_URL+'/functions/v1/paypal',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token,apikey:SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify({action:a,...b})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||'error');return j}
+async function openDeal(id){const r=all.find(x=>x.id===id);if(!r)return;
+  if(r.user_id===user.id)return alert(t('This is your own post. Others will message you under "My chats".','यह आपकी अपनी पोस्ट है। दूसरे आपको "मेरी चैट" में मैसेज करेंगे।'));
+  let{data:c}=await db.from('conversations').select('*').eq('requirement_id',r.id).eq('party_a',user.id).maybeSingle();
+  if(!c){const x=await db.from('conversations').insert({requirement_id:r.id,party_a:user.id,party_b:r.user_id}).select().single();if(x.error)return alert(x.error.message);c=x.data}
+  show(c,r)}
+function show(c,r){cv=c;nm=-1;ppOn=false;$('pp').innerHTML='';ms($('dMs'),'');
+  $('dT').textContent=r.product;
+  $('dI').textContent=[r.trade_type,r.quantity,r.price,r.country,r.trade_terms].filter(Boolean).join(' · ')+' · '+t('Posted by','पोस्ट करने वाले')+' '+(r.poster_name||'?')+' ('+(r.poster_country||'?')+')';
+  $('dD').textContent=r.details||'';$('cb').innerHTML='';$('dm').classList.add('on');clearInterval(tm);rf();tm=setInterval(rf,3000)}
+async function rf(){if(!cv)return;
+  const[m,d,k]=await Promise.all([db.from('messages').select('sender_id,body').eq('conversation_id',cv.id).order('created_at'),db.from('deal_ready').select('user_id,paid').eq('conversation_id',cv.id),db.from('deals').select('status').eq('conversation_id',cv.id)]);
+  const M=m.data||[];
+  if(M.length!==nm){nm=M.length;const b=$('cb');b.innerHTML=M.map(x=>{const me=x.sender_id===user.id;return `<div style="text-align:${me?'right':'left'};margin:6px 0"><span style="display:inline-block;max-width:80%;padding:6px 10px;border-radius:8px;background:${me?'var(--g)':'var(--n2)'};color:${me?'#1a1405':'var(--iv)'}">${esc(x.body)}</span></div>`}).join('');b.scrollTop=b.scrollHeight}
+  const D=d.data||[],me=D.find(x=>x.user_id===user.id),both=D.length>=2,ok=(k.data||[])[0]?.status==='confirmed';
+  $('ag').classList.toggle('x',!!me);
+  $('dS').textContent=ok?t('✅ Deal confirmed! Both agreed and paid.','✅ डील पक्की! दोनों ने सहमति दी और भुगतान किया।'):me&&me.paid?t('Your $2 is received. Waiting for the other person to pay.','आपके $2 मिल गए। दूसरे के भुगतान का इंतज़ार है।'):me&&both?t('Both agreed. Pay $2 to confirm the deal.','दोनों सहमत हैं। डील पक्की करने के लिए $2 दें।'):me?t('You agreed. Waiting for the other person to agree.','आपने सहमति दी। दूसरे की सहमति का इंतज़ार है।'):'';
+  if(me&&both&&!me.paid&&!ppOn)payBtn();
+  if(me&&me.paid)$('pp').innerHTML=''}
+function payBtn(){ppOn=true;
+  const go=()=>paypal.Buttons({createOrder:async()=>(await fn('create',{conversation_id:cv.id})).id,
+    onApprove:async d=>{try{await fn('capture',{order_id:d.orderID});ms($('dMs'),t('Payment verified.','भुगतान सत्यापित हुआ।'))}catch(e){ms($('dMs'),e.message,1)}rf()},
+    onError:()=>ms($('dMs'),t('Payment failed or cancelled.','भुगतान नहीं हुआ।'),1)}).render('#pp');
+  if(window.paypal)return go();const s=document.createElement('script');s.src='https://www.paypal.com/sdk/js?client-id='+PPID+'&currency=USD';s.onload=go;document.head.appendChild(s)}
+$('ag').onclick=async()=>{const{error}=await db.from('deal_ready').insert({conversation_id:cv.id,user_id:user.id});if(error)return ms($('dMs'),error.message,1);rf()};
+$('cS').onclick=async()=>{const b=$('cI').value.trim();if(!b)return;$('cI').value='';const{error}=await db.from('messages').insert({conversation_id:cv.id,sender_id:user.id,body:b});if(error)ms($('dMs'),error.message,1);rf()};
+$('cI').onkeydown=e=>{if(e.key==='Enter')$('cS').click()};
+$('dX').onclick=()=>{clearInterval(tm);cv=null;$('dm').classList.remove('on');$('pp').innerHTML=''};
+$('ls').onclick=e=>{const b=e.target.closest('[data-open]');if(b)openDeal(b.dataset.open)};
+async function loadChats(){const{data:c}=await db.from('conversations').select('*').order('created_at',{ascending:false}).limit(30);
+  if(!c||!c.length){$('mc').innerHTML='';return}
+  const{data:q}=await db.from('requirements').select('*').in('id',c.map(x=>x.requirement_id));
+  $('mc').innerHTML=`<h3>${t('My chats','मेरी चैट')}</h3>`+c.map(x=>{const r=(q||[]).find(y=>y.id===x.requirement_id);return r?`<button class="btn gh" style="margin:0 8px 8px 0" data-chat="${esc(x.id)}">${esc(r.product)}</button>`:''}).join('');
+  $('mc').onclick=e=>{const b=e.target.closest('[data-chat]');if(!b)return;const x=c.find(y=>y.id===b.dataset.chat);show(x,(q||[]).find(y=>y.id===x.requirement_id))}}
 if(db)db.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
 </script>
 </body>
