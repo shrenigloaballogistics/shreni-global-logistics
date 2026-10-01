@@ -191,7 +191,8 @@ a{color:var(--g2)}
 <div class="md" id="dm" role="dialog" aria-modal="true"><div class="card" style="max-width:560px">
   <h3 id="dT" style="margin-top:0"></h3><div class="mt" id="dI"></div><p id="dD" style="color:var(--mu)"></p>
   <div id="cb" style="background:var(--n);border:1px solid var(--ln);border-radius:6px;height:230px;overflow:auto;padding:10px;margin:12px 0"></div>
-  <div style="display:flex;gap:8px"><input id="cI" maxlength="2000" aria-label="Message"><button class="btn" id="cS">Send / भेजें</button></div>
+  <div id="em" class="x" style="display:grid;grid-template-columns:repeat(8,1fr);gap:2px;background:var(--n);border:1px solid var(--ln);border-radius:6px;padding:6px;margin-bottom:8px;text-align:center"></div>
+  <div style="display:flex;gap:8px"><button class="btn gh" id="eB" type="button" aria-label="Emoji" style="padding:10px 12px">😊</button><input id="cI" maxlength="2000" aria-label="Message"><button class="btn" id="cS">Send / भेजें</button></div>
   <button class="btn" id="ag" style="width:100%;margin-top:12px">Agree with Deal / डील पर सहमत</button>
   <div class="ms" id="dS"></div><div id="pp" style="margin-top:10px"></div><div class="ms" id="dMs" role="status"></div>
   <button class="btn gh" id="dX" style="width:100%;margin-top:8px">Close / बंद करें</button>
@@ -333,7 +334,7 @@ function show(c,r){cv=c;nm=-1;ppOn=false;$('pp').innerHTML='';ms($('dMs'),'');
 async function rf(){if(!cv)return;
   const[m,d,k]=await Promise.all([db.from('messages').select('sender_id,body').eq('conversation_id',cv.id).order('created_at'),db.from('deal_ready').select('user_id,paid').eq('conversation_id',cv.id),db.from('deals').select('status').eq('conversation_id',cv.id)]);
   const M=m.data||[];
-  if(M.length!==nm){nm=M.length;const b=$('cb');b.innerHTML=M.map(x=>{const me=x.sender_id===user.id;return `<div style="text-align:${me?'right':'left'};margin:6px 0"><span style="display:inline-block;max-width:80%;padding:6px 10px;border-radius:8px;background:${me?'var(--g)':'var(--n2)'};color:${me?'#1a1405':'var(--iv)'}">${esc(x.body)}</span></div>`}).join('');b.scrollTop=b.scrollHeight}
+  if(M.length!==nm){nm=M.length;const b=$('cb');b.innerHTML=M.map(x=>{const me=x.sender_id===user.id;return `<div style="display:flex;justify-content:${me?'flex-end':'flex-start'};margin:6px 0"><span style="max-width:80%;padding:7px 11px;border-radius:10px;word-break:break-word;white-space:pre-wrap;${me?'background:var(--g);color:#1a1405':'background:#fff;color:#000;border:1px solid #fff'}">${esc(x.body)}</span></div>`}).join('');b.scrollTop=b.scrollHeight}
   const D=d.data||[],me=D.find(x=>x.user_id===user.id),both=D.length>=2,ok=(k.data||[])[0]?.status==='confirmed';
   $('ag').classList.toggle('x',!!me);
   $('dS').textContent=ok?t('✅ Deal confirmed! Both agreed and paid.','✅ डील पक्की! दोनों ने सहमति दी और भुगतान किया।'):me&&me.paid?t('Your $2 is received. Waiting for the other person to pay.','आपके $2 मिल गए। दूसरे के भुगतान का इंतज़ार है।'):me&&both?t('Both agreed. Pay $2 to confirm the deal.','दोनों सहमत हैं। डील पक्की करने के लिए $2 दें।'):me?t('You agreed. Waiting for the other person to agree.','आपने सहमति दी। दूसरे की सहमति का इंतज़ार है।'):'';
@@ -347,6 +348,10 @@ function payBtn(){ppOn=true;
 $('ag').onclick=async()=>{const{error}=await db.from('deal_ready').insert({conversation_id:cv.id,user_id:user.id});if(error)return ms($('dMs'),error.message,1);rf()};
 $('cS').onclick=async()=>{const b=$('cI').value.trim();if(!b)return;$('cI').value='';const{error}=await db.from('messages').insert({conversation_id:cv.id,sender_id:user.id,body:b});if(error)ms($('dMs'),error.message,1);rf()};
 $('cI').onkeydown=e=>{if(e.key==='Enter')$('cS').click()};
+const EM='😀 😁 😂 🤣 😊 😍 😘 😎 🤝 👍 👎 🙏 👌 ✌️ 👏 💪 🔥 ❤️ 🎉 ✅ ❌ 😢 😡 🤔 😅 🙌 💰 📦 🚢 ✈️ 🏭 🌍'.split(' ');
+$('em').innerHTML=EM.map(e=>`<button type="button" style="background:0;border:0;cursor:pointer;font-size:1.4rem;padding:4px">${e}</button>`).join('');
+$('eB').onclick=()=>$('em').classList.toggle('x');
+$('em').onclick=e=>{const b=e.target.closest('button');if(b){$('cI').value+=b.textContent;$('cI').focus()}};
 $('dX').onclick=()=>{clearInterval(tm);cv=null;$('dm').classList.remove('on');$('pp').innerHTML=''};
 $('ls').onclick=e=>{const b=e.target.closest('[data-open]');if(b)openDeal(b.dataset.open)};
 async function loadChats(){const{data:c}=await db.from('conversations').select('*').order('created_at',{ascending:false}).limit(30);
