@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shreni Global Logistics</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--n:#07122a;--n2:#0d1f3f;--ln:#22365c;--g:#c9a24b;--g2:#e6c97a;--iv:#f3ecdc;--mu:#9fb0cc;--er:#ff8a7a}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{font-family:Inter,'Noto Sans Devanagari',system-ui,sans-serif;background:var(--n);color:var(--iv);line-height:1.65}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;line-height:1.15}
+body[data-l=en] .hi,body[data-l=hi] .en{display:none}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 5vw;border-bottom:1px solid var(--ln);position:sticky;top:0;background:rgba(7,18,42,.96);z-index:5}
+.brand{font:700 1.4rem 'Cormorant Garamond',Georgia,serif;display:flex;gap:9px;align-items:center}
+nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:.9rem}
+nav a{color:var(--mu);text-decoration:none}nav a:hover{color:var(--g2)}
+.btn{background:var(--g);color:#1a1405;border:0;padding:10px 18px;border-radius:6px;font:600 .92rem Inter,sans-serif;cursor:pointer}
+.btn:hover{background:var(--g2)}.btn.gh{background:0;color:var(--iv);border:1px solid var(--ln)}.btn.gh:hover{border-color:var(--g)}
+:focus-visible{outline:2px solid var(--g2);outline-offset:2px}
+.hero{padding:9vh 5vw 7vh;text-align:center;background:radial-gradient(ellipse at 50% 0,#15305e,var(--n) 65%)}
+.hero h1{font-size:clamp(2.3rem,7vw,4.4rem);max-width:16ch;margin:0 auto 16px}
+.hero p{color:var(--mu);max-width:58ch;margin:0 auto 28px}
+.ch{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;max-width:620px;margin:auto}
+.ch button{padding:20px;background:var(--n2);border:1px solid var(--g);color:var(--iv);border-radius:10px;font:700 1.3rem 'Cormorant Garamond',Georgia,serif;cursor:pointer}
+.ch button:hover{background:#15305e}
+section{padding:50px 5vw;max-width:1050px;margin:auto}
+h2{font-size:2.1rem;margin-bottom:14px}h3{font-size:1.4rem;margin:18px 0 6px}
+.gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.gr>div{border-left:2px solid var(--g);padding-left:14px;color:var(--mu);font-size:.94rem}
+.card{background:var(--n2);border:1px solid var(--ln);border-radius:10px;padding:20px}
+ol{padding-left:20px;color:var(--mu)}li{margin:8px 0}
+label{display:block;font-size:.84rem;color:var(--mu);margin:11px 0 4px}
+input,select,textarea{width:100%;background:var(--n);border:1px solid var(--ln);color:var(--iv);padding:10px;border-radius:6px;font:inherit}
+textarea{min-height:76px}.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.r2{grid-template-columns:1fr}}
+.md{position:fixed;inset:0;background:rgba(3,8,20,.82);display:none;align-items:center;justify-content:center;padding:14px;z-index:10;overflow:auto}
+.md.on{display:flex}.md .card{width:100%;max-width:470px;max-height:92vh;overflow:auto}
+.tb{display:flex;gap:8px}.tb button{flex:1}
+.ms{min-height:1.3em;margin-top:9px;font-size:.88rem;color:var(--g2)}.ms.er{color:var(--er)}
+.x{display:none!important}
+.fl{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.fl>*{flex:1;min-width:140px;width:auto}
+.it{background:var(--n2);border:1px solid var(--ln);border-radius:10px;padding:16px;margin-bottom:12px}
+.tg{font-size:.75rem;padding:2px 9px;border-radius:99px;border:1px solid var(--g);color:var(--g2)}
+.mt{color:var(--mu);font-size:.88rem;margin:4px 0}
+.ck{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;color:var(--mu);margin-top:12px}.ck input{width:auto;margin-top:4px}
+footer{border-top:1px solid var(--ln);padding:22px 5vw;text-align:center;color:var(--mu);font-size:.84rem}
+a{color:var(--g2)}
+</style>
+</head>
+<body data-l="en">
+<header>
+  <div class="brand"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#c9a24b" stroke-width="2"/><ellipse cx="20" cy="20" rx="7" ry="17" fill="none" stroke="#c9a24b" stroke-width="1.2"/><path d="M3 20h34M6 11h28M6 29h28" stroke="#c9a24b" stroke-width="1.2" fill="none"/></svg>Shreni Global Logistics</div>
+  <nav>
+    <a href="#about"><span class="en">About</span><span class="hi">हमारे बारे में</span></a>
+    <a href="#terms"><span class="en">Terms</span><span class="hi">शर्तें</span></a>
+    <a href="#contact"><span class="en">Contact</span><span class="hi">संपर्क</span></a>
+    <button class="btn gh" id="lg" aria-label="Language">हिंदी</button>
+    <button class="btn gh" id="nIn">Log in / लॉगिन</button>
+    <button class="btn gh x" id="nOut">Log out / लॉगआउट</button>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1><span class="en">One world. One family of traders.</span><span class="hi">एक दुनिया, व्यापारियों का एक परिवार।</span></h1>
+  <p class="en">Shreni, an old Indian word for a guild of merchants, helps exporters and importers from any country find each other.</p>
+  <p class="hi">"श्रेणी" प्राचीन भारत में व्यापारियों के संघ को कहते थे। हम किसी भी देश के निर्यातक और आयातक को एक-दूसरे से मिलवाते हैं।</p>
+  <div class="ch">
+    <button data-go="export">I want to export<br>मैं निर्यात करना चाहता हूँ</button>
+    <button data-go="import">I want to import<br>मैं आयात करना चाहता हूँ</button>
+  </div>
+</div>
+
+<section>
+  <h2><span class="en">How it works</span><span class="hi">यह कैसे काम करता है</span></h2>
+  <div class="gr">
+    <div><b class="en">1. Register</b><b class="hi">1. रजिस्टर करें</b><br><span class="en">Verify your email with a one-time code.</span><span class="hi">ईमेल पर आए कोड से पहचान पक्की करें।</span></div>
+    <div><b class="en">2. Post or search</b><b class="hi">2. पोस्ट करें या खोजें</b><br><span class="en">List what you sell or want to buy.</span><span class="hi">जो बेचना या खरीदना है, वह डालें।</span></div>
+    <div><b class="en">3. Stay private</b><b class="hi">3. निजी रहें</b><br><span class="en">Personal information stays hidden.</span><span class="hi">आपकी निजी जानकारी छिपी रहती है।</span></div>
+  </div>
+</section>
+
+<section id="app" class="x">
+  <h2><span class="en">Trade board</span><span class="hi">ट्रेड बोर्ड</span></h2>
+  <div class="card" style="margin-bottom:22px">
+    <h3 style="margin-top:0"><span class="en">Post a requirement</span><span class="hi">अपनी ज़रूरत डालें</span></h3>
+    <div class="r2">
+      <div><label for="pT">I want to / मैं चाहता हूँ</label><select id="pT"><option value="export">Export / निर्यात</option><option value="import">Import / आयात</option></select></div>
+      <div><label for="pP">Product / माल</label><input id="pP" maxlength="120"></div>
+    </div>
+    <div class="r2">
+      <div><label for="pQ">Quantity / मात्रा</label><input id="pQ" maxlength="60"></div>
+      <div><label for="pR">Price / कीमत</label><input id="pR" maxlength="60"></div>
+    </div>
+    <div class="r2">
+      <div><label for="pC">Country / देश</label><input id="pC" list="cl"></div>
+      <div><label for="pM">Trade terms / शर्तें</label><select id="pM"><option>FOB</option><option>CIF</option><option>CFR</option><option>EXW</option><option>DAP</option><option>DDP</option></select></div>
+    </div>
+    <label for="pD">Details / विवरण</label><textarea id="pD" maxlength="1000"></textarea>
+    <button class="btn" id="pB" style="margin-top:12px">Post / पोस्ट करें</button>
+    <div class="ms" id="pMs" role="status"></div>
+  </div>
+  <div class="fl">
+    <select id="fT" aria-label="Type"><option value="">All / सभी</option><option value="export">Export / निर्यात</option><option value="import">Import / आयात</option></select>
+    <input id="fC" list="cl" placeholder="Country / देश">
+    <input id="fQ" placeholder="Search product / माल खोजें">
+  </div>
+  <div id="ls"></div>
+</section>
+
+<section id="about">
+  <h2><span class="en">About Us</span><span class="hi">हमारे बारे में</span></h2>
+  <p class="en" style="color:var(--mu)">Shreni Global Logistics is a matchmaking platform. We help buyers and sellers around the world find each other. All personal information stays hidden on the platform.</p>
+  <p class="hi" style="color:var(--mu)">श्रेणी ग्लोबल लॉजिस्टिक्स एक मिलान (matchmaking) मंच है। हम दुनिया भर के खरीदारों और विक्रेताओं को एक-दूसरे से मिलवाते हैं। इस मंच पर सारी निजी जानकारी छिपी रहती है।</p>
+  <h3><span class="en">Our team</span><span class="hi">हमारी टीम</span></h3>
+  <div class="gr">
+    <div class="card"><b>Nikhil Pandey</b><br><span class="en">Founder</span><span class="hi">संस्थापक</span></div>
+    <div class="card"><b>Om Pandey</b><br><span class="en">CEO</span><span class="hi">मुख्य कार्यकारी अधिकारी (CEO)</span></div>
+    <div class="card"><b>Naman Pandey</b><br><span class="en">Director</span><span class="hi">निदेशक</span></div>
+  </div>
+</section>
+
+<section id="terms">
+  <h2><span class="en">Terms &amp; Conditions</span><span class="hi">नियम और शर्तें</span></h2>
+  <ol class="en">
+    <li>This website only does matchmaking. All personal information stays hidden. Shreni only introduces buyers and sellers and is not a party to any deal.</li>
+    <li>Quality of goods, payment, shipping and legal compliance are the responsibility of both parties.</li>
+    <li>Information you give must be true. Accounts with false information may be closed.</li>
+    <li>Records may be kept to investigate fraud or disputes.</li>
+    <li>There is no guarantee for deals made outside the platform.</li>
+  </ol>
+  <ol class="hi">
+    <li>यह वेबसाइट सिर्फ़ मिलान (matchmaking) का काम करती है। यहाँ सारी निजी जानकारी छिपी रहती है। श्रेणी सिर्फ़ खरीदार और विक्रेता को मिलवाने का मंच है, किसी सौदे का पक्ष नहीं है।</li>
+    <li>माल की गुणवत्ता, भुगतान, शिपिंग और कानूनी नियमों की ज़िम्मेदारी दोनों पार्टियों की है।</li>
+    <li>आपकी दी हुई जानकारी सही होनी चाहिए। झूठी जानकारी पर अकाउंट बंद किया जा सकता है।</li>
+    <li>धोखाधड़ी या विवाद की जाँच के लिए रिकॉर्ड रखे जा सकते हैं।</li>
+    <li>प्लेटफ़ॉर्म से बाहर होने वाले सौदों की कोई गारंटी नहीं है।</li>
+  </ol>
+</section>
+
+<section id="contact">
+  <h2><span class="en">Contact</span><span class="hi">संपर्क</span></h2>
+  <p>Email / ईमेल: <a href="mailto:shrenigloballogistics@gmail.com">shrenigloballogistics@gmail.com</a></p>
+  <p style="color:var(--mu)">Phone / फ़ोन: <span class="en">Coming soon</span><span class="hi">जल्द उपलब्ध</span></p>
+</section>
+
+<footer>© <span id="yr"></span> Shreni Global Logistics</footer>
+
+<div class="md" id="md" role="dialog" aria-modal="true">
+  <div class="card">
+    <div class="tb"><button class="btn" id="tR">Register / रजिस्टर</button><button class="btn gh" id="tL">Log in / लॉगिन</button></div>
+    <div id="s1">
+      <div id="rf">
+        <label for="rN">Full name / पूरा नाम</label><input id="rN" autocomplete="name">
+        <label for="rA">Address / पता</label><input id="rA" autocomplete="street-address">
+        <label for="rC">Country / देश</label><input id="rC" list="cl" autocomplete="country-name">
+        <label for="rP">Mobile / मोबाइल (coming soon / जल्द)</label><input id="rP" disabled>
+        <div class="ck"><input type="checkbox" id="rT"><label for="rT" style="margin:0">I agree to the <a href="#terms" id="tl">Terms</a> / मैं शर्तों से सहमत हूँ</label></div>
+      </div>
+      <label for="rE">Email / ईमेल</label><input id="rE" type="email" autocomplete="email">
+      <button class="btn" id="sO" style="width:100%;margin-top:12px">Send code / कोड भेजें</button>
+    </div>
+    <div id="s2" class="x">
+      <p class="mt">Code sent to / कोड भेजा गया: <b id="sT"></b></p>
+      <label for="oc">Code / कोड</label><input id="oc" inputmode="numeric" autocomplete="one-time-code" maxlength="8">
+      <button class="btn" id="vO" style="width:100%;margin-top:12px">Verify / पुष्टि करें</button>
+    </div>
+    <div class="ms" id="aM" role="status"></div>
+    <button class="btn gh" id="cM" style="width:100%;margin-top:8px">Close / बंद करें</button>
+  </div>
+</div>
+<datalist id="cl"></datalist>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL='PASTE_NEW_PROJECT_URL_HERE';
+const SUPABASE_PUBLISHABLE_KEY='PASTE_NEW_PUBLISHABLE_KEY_HERE'; // never the service_role key
+let db=null;try{db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY)}catch(e){console.warn('Supabase not set up yet',e)}
+const $=i=>document.getElementById(i);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let L='en',mode='register',pend=null,user=null,all=[];
+const t=(e,h)=>L==='hi'?h:e;
+$('yr').textContent=new Date().getFullYear();
+$('lg').onclick=()=>{L=L==='en'?'hi':'en';document.body.dataset.l=L;document.documentElement.lang=L;$('lg').textContent=L==='en'?'हिंदी':'English';render()};
+(()=>{try{const d=new Intl.DisplayNames(['en'],{type:'region'}),s=new Set(),A='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+for(const a of A)for(const b of A){try{const n=d.of(a+b);if(n&&n!==a+b&&n!=='Unknown Region')s.add(n)}catch(e){}}
+$('cl').innerHTML=[...s].sort().map(n=>`<option value="${esc(n)}">`).join('')}catch(e){}})();
+const ms=(el,m,er)=>{el.textContent=m;el.className='ms'+(er?' er':'')};
+function setMode(m){mode=m;pend=null;$('rf').classList.toggle('x',m!=='register');$('tR').className='btn'+(m==='register'?'':' gh');$('tL').className='btn'+(m==='login'?'':' gh');$('s1').classList.remove('x');$('s2').classList.add('x');ms($('aM'),'')}
+const open=m=>{setMode(m);$('md').classList.add('on')},close=()=>$('md').classList.remove('on');
+$('nIn').onclick=()=>open('login');$('cM').onclick=close;$('tR').onclick=()=>setMode('register');$('tL').onclick=()=>setMode('login');
+$('tl').onclick=close;
+$('nOut').onclick=async()=>{if(db)await db.auth.signOut();setUser(null)};
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(user){$('pT').value=b.dataset.go;$('app').scrollIntoView()}else open('register')});
+$('sO').onclick=async()=>{
+  if(!db)return ms($('aM'),t('Setup pending: add Supabase URL and key in the file.','सेटअप बाकी है: फ़ाइल में Supabase URL और key डालें।'),1);
+  const email=$('rE').value.trim();if(!email)return ms($('aM'),t('Enter your email.','ईमेल डालें।'),1);
+  if(mode==='register'){
+    pend={full_name:$('rN').value.trim(),address:$('rA').value.trim(),country:$('rC').value.trim(),email};
+    if(!pend.full_name||!pend.address||!pend.country)return ms($('aM'),t('Fill name, address and country.','नाम, पता और देश भरें।'),1);
+    if(!$('rT').checked)return ms($('aM'),t('Please accept the Terms.','कृपया शर्तें स्वीकार करें।'),1);
+  }
+  $('sO').disabled=true;ms($('aM'),t('Sending...','भेज रहे हैं...'));
+  const{error}=await db.auth.signInWithOtp({email,options:{shouldCreateUser:mode==='register'}});
+  $('sO').disabled=false;if(error)return ms($('aM'),error.message,1);
+  $('sT').textContent=email;$('s1').classList.add('x');$('s2').classList.remove('x');ms($('aM'),t('Code sent. Check spam too.','कोड भेजा गया। Spam भी देखें।'));
+};
+$('vO').onclick=async()=>{
+  const email=$('rE').value.trim(),token=$('oc').value.trim();if(!token)return ms($('aM'),t('Enter the code.','कोड डालें।'),1);
+  $('vO').disabled=true;const{data,error}=await db.auth.verifyOtp({email,token,type:'email'});$('vO').disabled=false;
+  if(error)return ms($('aM'),error.message,1);
+  if(mode==='register'&&pend){const{error:e2}=await db.from('profiles').upsert({id:data.user.id,...pend});if(e2)return ms($('aM'),'Profile not saved: '+e2.message,1)}
+  close();setUser(data.user);
+};
+function setUser(u){user=u;$('app').classList.toggle('x',!u);$('nIn').classList.toggle('x',!!u);$('nOut').classList.toggle('x',!u);if(u)load()}
+$('pB').onclick=async()=>{
+  const r={user_id:user.id,trade_type:$('pT').value,product:$('pP').value.trim(),quantity:$('pQ').value.trim(),price:$('pR').value.trim(),country:$('pC').value.trim(),trade_terms:$('pM').value,details:$('pD').value.trim(),status:'active'};
+  if(!r.product||!r.quantity||!r.country)return ms($('pMs'),t('Fill product, quantity and country.','माल, मात्रा और देश भरें।'),1);
+  $('pB').disabled=true;const{error}=await db.from('requirements').insert(r);$('pB').disabled=false;
+  if(error)return ms($('pMs'),error.message,1);
+  ms($('pMs'),t('Posted.','पोस्ट हो गया।'));['pP','pQ','pR','pC','pD'].forEach(i=>$(i).value='');load();
+};
+async function load(){
+  const{data,error}=await db.from('requirements').select('*').eq('status','active').order('created_at',{ascending:false}).limit(100);
+  if(error){$('ls').innerHTML=`<p class="mt">${esc(error.message)}</p>`;return}all=data||[];render();
+}
+function render(){
+  const a=$('fT').value,c=$('fC').value.trim().toLowerCase(),q=$('fQ').value.trim().toLowerCase();
+  const rows=all.filter(r=>(!a||r.trade_type===a)&&(!c||(r.country||'').toLowerCase().includes(c))&&(!q||(r.product||'').toLowerCase().includes(q)));
+  $('ls').innerHTML=rows.length?rows.map(r=>`<div class="it"><span class="tg">${r.trade_type==='export'?t('Exporting','निर्यात'):t('Importing','आयात')}</span><h3 style="margin:8px 0 2px">${esc(r.product)}</h3><div class="mt">${esc(r.quantity)} · ${esc(r.price)} · ${esc(r.country)} · ${esc(r.trade_terms)}</div><p>${esc(r.details)}</p></div>`).join(''):`<p class="mt">${t('Nothing yet. Post the first one.','अभी कुछ नहीं। पहला आप डालें।')}</p>`;
+}
+['fT','fC','fQ'].forEach(i=>$(i).oninput=render);
+if(db)db.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
+</script>
+</body>
+</html>
