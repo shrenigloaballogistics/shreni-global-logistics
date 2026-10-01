@@ -179,8 +179,8 @@ a{color:var(--g2)}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-const SUPABASE_URL='PASTE_NEW_PROJECT_URL_HERE';
-const SUPABASE_PUBLISHABLE_KEY='PASTE_NEW_PUBLISHABLE_KEY_HERE'; // never the service_role key
+const SUPABASE_URL='https://jrjbohwnioarjcjwaqul.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_RVB0P444-oSAb4ZVCnU96Q_-Lv2DkJ7'; // never the service_role key
 let db=null;try{db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY)}catch(e){console.warn('Supabase not set up yet',e)}
 const $=i=>document.getElementById(i);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
