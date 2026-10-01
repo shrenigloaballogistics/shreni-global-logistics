@@ -158,12 +158,18 @@ a{color:var(--g2)}
         <div class="ck"><input type="checkbox" id="rT"><label for="rT" style="margin:0">I agree to the <a href="#terms" id="tl">Terms</a> / मैं शर्तों से सहमत हूँ</label></div>
       </div>
       <label for="rE">Email / ईमेल</label><input id="rE" type="email" autocomplete="email">
+      <div id="pw"><label for="rW">Password / पासवर्ड (min 8)</label><input id="rW" type="password" autocomplete="new-password"></div>
       <button class="btn" id="sO" style="width:100%;margin-top:12px">Send code / कोड भेजें</button>
+      <p class="mt x" id="lk" style="margin-top:10px"><a href="#" id="fg">Forgot password / पासवर्ड भूल गए</a> &nbsp;|&nbsp; <a href="#" id="uc">Use code instead / कोड से लॉगिन</a></p>
     </div>
     <div id="s2" class="x">
       <p class="mt">Code sent to / कोड भेजा गया: <b id="sT"></b></p>
       <label for="oc">Code / कोड</label><input id="oc" inputmode="numeric" autocomplete="one-time-code" maxlength="8">
       <button class="btn" id="vO" style="width:100%;margin-top:12px">Verify / पुष्टि करें</button>
+    </div>
+    <div id="s3" class="x">
+      <label for="np">New password / नया पासवर्ड (min 8)</label><input id="np" type="password" autocomplete="new-password">
+      <button class="btn" id="sP" style="width:100%;margin-top:12px">Save password / पासवर्ड सेव करें</button>
     </div>
     <div class="ms" id="aM" role="status"></div>
     <button class="btn gh" id="cM" style="width:100%;margin-top:8px">Close / बंद करें</button>
@@ -173,12 +179,12 @@ a{color:var(--g2)}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-const SUPABASE_URL='https://jrjbohwnioarjcjwaqul.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyamJvaHduaW9hcmpjandhcXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjQyMDAsImV4cCI6MjEwNjQ0MDIwMH0.QNkYwsg0RYZFHLKQXdS9fNfdGlx-M7u0yg5kgqguXSE'; // never the service_role key
+const SUPABASE_URL='PASTE_NEW_PROJECT_URL_HERE';
+const SUPABASE_PUBLISHABLE_KEY='PASTE_NEW_PUBLISHABLE_KEY_HERE'; // never the service_role key
 let db=null;try{db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY)}catch(e){console.warn('Supabase not set up yet',e)}
 const $=i=>document.getElementById(i);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let L='en',mode='register',pend=null,user=null,all=[];
+let L='en',mode='register',pend=null,pw0=null,user=null,all=[];
 const t=(e,h)=>L==='hi'?h:e;
 $('yr').textContent=new Date().getFullYear();
 $('lg').onclick=()=>{L=L==='en'?'hi':'en';document.body.dataset.l=L;document.documentElement.lang=L;$('lg').textContent=L==='en'?'हिंदी':'English';render()};
@@ -186,7 +192,8 @@ $('lg').onclick=()=>{L=L==='en'?'hi':'en';document.body.dataset.l=L;document.doc
 for(const a of A)for(const b of A){try{const n=d.of(a+b);if(n&&n!==a+b&&n!=='Unknown Region')s.add(n)}catch(e){}}
 $('cl').innerHTML=[...s].sort().map(n=>`<option value="${esc(n)}">`).join('')}catch(e){}})();
 const ms=(el,m,er)=>{el.textContent=m;el.className='ms'+(er?' er':'')};
-function setMode(m){mode=m;pend=null;$('rf').classList.toggle('x',m!=='register');$('tR').className='btn'+(m==='register'?'':' gh');$('tL').className='btn'+(m==='login'?'':' gh');$('s1').classList.remove('x');$('s2').classList.add('x');ms($('aM'),'')}
+function setMode(m){mode=m;pend=null;pw0=null;$('rW').value='';$('oc').value='';$('rf').classList.toggle('x',m!=='register');$('pw').classList.toggle('x',m!=='register'&&m!=='login');$('lk').classList.toggle('x',m!=='login');$('rW').autocomplete=m==='register'?'new-password':'current-password';$('tR').className='btn'+(m==='register'?'':' gh');$('tL').className='btn'+(m!=='register'?'':' gh');$('s1').classList.remove('x');$('s2').classList.add('x');$('s3').classList.add('x');setSO();ms($('aM'),'')}
+function setSO(){$('sO').textContent=mode==='login'?t('Log in','लॉगिन'):t('Send code','कोड भेजें')}
 const open=m=>{setMode(m);$('md').classList.add('on')},close=()=>$('md').classList.remove('on');
 $('nIn').onclick=()=>open('login');$('cM').onclick=close;$('tR').onclick=()=>setMode('register');$('tL').onclick=()=>setMode('login');
 $('tl').onclick=close;
@@ -195,7 +202,17 @@ document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(user){$('pT'
 $('sO').onclick=async()=>{
   if(!db)return ms($('aM'),t('Setup pending: add Supabase URL and key in the file.','सेटअप बाकी है: फ़ाइल में Supabase URL और key डालें।'),1);
   const email=$('rE').value.trim();if(!email)return ms($('aM'),t('Enter your email.','ईमेल डालें।'),1);
+  const pwd=$('rW').value;
+  if(mode==='login'){
+    if(!pwd)return ms($('aM'),t('Enter your password.','पासवर्ड डालें।'),1);
+    $('sO').disabled=true;ms($('aM'),t('Logging in...','लॉगिन हो रहा है...'));
+    const{data,error}=await db.auth.signInWithPassword({email,password:pwd});
+    $('sO').disabled=false;if(error)return ms($('aM'),error.message+t(' (No password yet? Use code instead.)',' (पासवर्ड नहीं है? कोड से लॉगिन करें।)'),1);
+    close();return setUser(data.user);
+  }
   if(mode==='register'){
+    if(pwd.length<8)return ms($('aM'),t('Password must be at least 8 characters.','पासवर्ड कम से कम 8 अक्षर का हो।'),1);
+    pw0=pwd;
     pend={full_name:$('rN').value.trim(),address:$('rA').value.trim(),country:$('rC').value.trim(),email};
     if(!pend.full_name||!pend.address||!pend.country)return ms($('aM'),t('Fill name, address and country.','नाम, पता और देश भरें।'),1);
     if(!$('rT').checked)return ms($('aM'),t('Please accept the Terms.','कृपया शर्तें स्वीकार करें।'),1);
@@ -209,9 +226,21 @@ $('vO').onclick=async()=>{
   const email=$('rE').value.trim(),token=$('oc').value.trim();if(!token)return ms($('aM'),t('Enter the code.','कोड डालें।'),1);
   $('vO').disabled=true;const{data,error}=await db.auth.verifyOtp({email,token,type:'email'});$('vO').disabled=false;
   if(error)return ms($('aM'),error.message,1);
-  if(mode==='register'&&pend){const{error:e2}=await db.from('profiles').upsert({id:data.user.id,...pend});if(e2)return ms($('aM'),'Profile not saved: '+e2.message,1)}
+  if(mode==='reset'){$('s2').classList.add('x');$('s3').classList.remove('x');return ms($('aM'),t('Verified. Set a new password.','पुष्टि हो गई। नया पासवर्ड रखें।'))}
+  if(mode==='register'&&pend){
+    if(pw0){const{error:e3}=await db.auth.updateUser({password:pw0});if(e3)return ms($('aM'),'Password not saved: '+e3.message,1)}
+    const{error:e2}=await db.from('profiles').upsert({id:data.user.id,...pend});if(e2)return ms($('aM'),'Profile not saved: '+e2.message,1)
+  }
   close();setUser(data.user);
 };
+$('sP').onclick=async()=>{
+  const p=$('np').value;if(p.length<8)return ms($('aM'),t('Password must be at least 8 characters.','पासवर्ड कम से कम 8 अक्षर का हो।'),1);
+  $('sP').disabled=true;const{data,error}=await db.auth.updateUser({password:p});$('sP').disabled=false;
+  if(error)return ms($('aM'),error.message,1);
+  $('np').value='';close();setUser(data.user);
+};
+$('fg').onclick=e=>{e.preventDefault();setMode('reset');ms($('aM'),t('Enter your email. We will send a code.','ईमेल डालें। हम कोड भेजेंगे।'))};
+$('uc').onclick=e=>{e.preventDefault();setMode('code')};
 function setUser(u){user=u;$('app').classList.toggle('x',!u);$('nIn').classList.toggle('x',!!u);$('nOut').classList.toggle('x',!u);if(u)load()}
 $('pB').onclick=async()=>{
   const r={user_id:user.id,trade_type:$('pT').value,product:$('pP').value.trim(),quantity:$('pQ').value.trim(),price:$('pR').value.trim(),country:$('pC').value.trim(),trade_terms:$('pM').value,details:$('pD').value.trim(),status:'active'};
@@ -224,7 +253,7 @@ async function load(){
   const{data,error}=await db.from('requirements').select('*').eq('status','active').order('created_at',{ascending:false}).limit(100);
   if(error){$('ls').innerHTML=`<p class="mt">${esc(error.message)}</p>`;return}all=data||[];render();
 }
-function render(){
+function render(){setSO();
   const a=$('fT').value,c=$('fC').value.trim().toLowerCase(),q=$('fQ').value.trim().toLowerCase();
   const rows=all.filter(r=>(!a||r.trade_type===a)&&(!c||(r.country||'').toLowerCase().includes(c))&&(!q||(r.product||'').toLowerCase().includes(q)));
   $('ls').innerHTML=rows.length?rows.map(r=>`<div class="it"><span class="tg">${r.trade_type==='export'?t('Exporting','निर्यात'):t('Importing','आयात')}</span><h3 style="margin:8px 0 2px">${esc(r.product)}</h3><div class="mt">${esc(r.quantity)} · ${esc(r.price)} · ${esc(r.country)} · ${esc(r.trade_terms)}</div><p>${esc(r.details)}</p></div>`).join(''):`<p class="mt">${t('Nothing yet. Post the first one.','अभी कुछ नहीं। पहला आप डालें।')}</p>`;
