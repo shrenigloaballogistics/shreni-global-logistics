@@ -65,6 +65,7 @@ a{color:var(--g2)}
     <a href="#terms"><span class="en">Terms</span><span class="hi">शर्तें</span></a>
     <a href="#contact"><span class="en">Contact</span><span class="hi">संपर्क</span></a>
     <button class="btn gh" id="lg" aria-label="Language">हिंदी</button>
+    <a href="#dash" id="nd" class="x" style="color:var(--g2);font-weight:600"></a>
     <button class="btn gh" id="nIn">Log in / लॉगिन</button>
     <button class="btn gh x" id="nOut">Log out / लॉगआउट</button>
   </nav>
@@ -91,6 +92,8 @@ a{color:var(--g2)}
 
 <section id="app" class="x">
   <h2><span class="en">Trade board</span><span class="hi">ट्रेड बोर्ड</span></h2>
+  <div class="card" id="dash" style="margin-bottom:22px"><h3 style="margin-top:0"><span class="en">My dashboard</span><span class="hi">मेरा डैशबोर्ड</span></h3>
+    <div class="gr" id="st"></div><h3><span class="en">My chats</span><span class="hi">मेरी चैट</span></h3><div id="mc"></div></div>
   <div class="card" style="margin-bottom:22px">
     <h3 style="margin-top:0"><span class="en">Post a requirement</span><span class="hi">अपनी ज़रूरत डालें</span></h3>
     <div class="r2">
@@ -114,7 +117,6 @@ a{color:var(--g2)}
     <input id="fC" list="cl" placeholder="Country / देश">
     <input id="fQ" placeholder="Search product / माल खोजें">
   </div>
-  <div id="mc" style="margin-bottom:18px"></div>
   <div id="ls"></div>
 </section>
 
@@ -201,6 +203,7 @@ a{color:var(--g2)}
   <div class="ms" id="dS"></div><div id="pp" style="margin-top:10px"></div><div class="ms" id="dMs" role="status"></div>
   <button class="btn gh" id="dX" style="width:100%;margin-top:8px">Close / बंद करें</button>
 </div></div>
+<div id="ts" class="x" role="status" style="position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--g);color:#1a1405;padding:10px 16px;border-radius:8px;z-index:20;cursor:pointer;font-weight:600"><span class="en">💬 New message! Open dashboard</span><span class="hi">💬 नया मैसेज! डैशबोर्ड खोलें</span></div>
 <datalist id="cl"></datalist>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -302,7 +305,7 @@ $('sP').onclick=async()=>{
 };
 $('fg').onclick=e=>{e.preventDefault();setMode('reset');ms($('aM'),t('Enter your email. We will send a code.','ईमेल डालें। हम कोड भेजेंगे।'))};
 $('uc').onclick=e=>{e.preventDefault();setMode('code')};
-function setUser(u){user=u;$('app').classList.toggle('x',!u);$('nIn').classList.toggle('x',!!u);$('nOut').classList.toggle('x',!u);if(u){load();loadChats()}}
+function setUser(u){user=u;$('app').classList.toggle('x',!u);$('nIn').classList.toggle('x',!!u);$('nOut').classList.toggle('x',!u);if(u){load();loadChats();clearInterval(pt);pt=setInterval(loadChats,20000)}else clearInterval(pt)}
 $('pB').onclick=async()=>{
   const r={user_id:user.id,trade_type:$('pT').value,product:$('pP').value.trim(),quantity:$('pQ').value.trim(),price:$('pR').value.trim(),country:$('pC').value.trim(),trade_terms:$('pM').value,details:$('pD').value.trim(),status:'active'};
   if(!r.product||!r.quantity||!r.country)return ms($('pMs'),t('Fill product, quantity and country.','माल, मात्रा और देश भरें।'),1);
@@ -336,8 +339,8 @@ function show(c,r){cv=c;nm=-1;ppOn=false;$('pp').innerHTML='';ms($('dMs'),'');
   $('dI').textContent=[r.trade_type,r.quantity,r.price,r.country,r.trade_terms].filter(Boolean).join(' · ')+' · '+t('Posted by','पोस्ट करने वाले')+' '+(r.poster_name||'?')+' ('+(r.poster_country||'?')+')';
   $('dD').textContent=r.details||'';$('cb').innerHTML='';$('dm').classList.add('on');clearInterval(tm);rf();tm=setInterval(rf,3000)}
 async function rf(){if(!cv)return;
-  const[m,d,k]=await Promise.all([db.from('messages').select('sender_id,body').eq('conversation_id',cv.id).order('created_at'),db.from('deal_ready').select('user_id,paid').eq('conversation_id',cv.id),db.from('deals').select('status').eq('conversation_id',cv.id)]);
-  const M=m.data||[];
+  const[m,d,k]=await Promise.all([db.from('messages').select('sender_id,body,created_at').eq('conversation_id',cv.id).order('created_at'),db.from('deal_ready').select('user_id,paid').eq('conversation_id',cv.id),db.from('deals').select('status').eq('conversation_id',cv.id)]);
+  const M=m.data||[];if(M.length)try{localStorage.setItem('seen_'+cv.id,Date.parse(M[M.length-1].created_at))}catch(e){}
   if(M.length!==nm){nm=M.length;const b=$('cb');b.innerHTML=M.map(x=>{const me=x.sender_id===user.id;return `<div style="display:flex;justify-content:${me?'flex-end':'flex-start'};margin:6px 0"><span style="max-width:80%;padding:7px 11px;border-radius:10px;word-break:break-word;white-space:pre-wrap;${me?'background:var(--g);color:#1a1405':'background:#fff;color:#000;border:1px solid #fff'}">${esc(x.body)}</span></div>`}).join('');b.scrollTop=b.scrollHeight}
   const D=d.data||[],me=D.find(x=>x.user_id===user.id),both=D.length>=2,ok=(k.data||[])[0]?.status==='confirmed';
   $('ag').classList.toggle('x',!!me);
@@ -358,11 +361,33 @@ $('eB').onclick=()=>$('em').classList.toggle('x');
 $('em').onclick=e=>{const b=e.target.closest('button');if(b){$('cI').value+=b.textContent;$('cI').focus()}};
 $('dX').onclick=()=>{clearInterval(tm);cv=null;$('dm').classList.remove('on');$('pp').innerHTML=''};
 $('ls').onclick=e=>{const b=e.target.closest('[data-open]');if(b)openDeal(b.dataset.open)};
-async function loadChats(){const{data:c}=await db.from('conversations').select('*').order('created_at',{ascending:false}).limit(30);
-  if(!c||!c.length){$('mc').innerHTML='';return}
-  const{data:q}=await db.from('requirements').select('*').in('id',c.map(x=>x.requirement_id));
-  $('mc').innerHTML=`<h3>${t('My chats','मेरी चैट')}</h3>`+c.map(x=>{const r=(q||[]).find(y=>y.id===x.requirement_id);return r?`<button class="btn gh" style="margin:0 8px 8px 0" data-chat="${esc(x.id)}">${esc(r.product)}</button>`:''}).join('');
-  $('mc').onclick=e=>{const b=e.target.closest('[data-chat]');if(!b)return;const x=c.find(y=>y.id===b.dataset.chat);show(x,(q||[]).find(y=>y.id===x.requirement_id))}}
+let pt=null,pu=0,ct=null;
+const seen=id=>{try{return+localStorage.getItem('seen_'+id)||0}catch(e){return 0}};
+function toast(){const e=$('ts');e.classList.remove('x');clearTimeout(ct);ct=setTimeout(()=>e.classList.add('x'),6000)}
+$('ts').onclick=()=>{$('ts').classList.add('x');$('dash').scrollIntoView()};
+async function loadChats(){
+  const{data:c}=await db.from('conversations').select('*').order('created_at',{ascending:false}).limit(100);
+  const C=c||[],ids=C.map(x=>x.id),rq=[...new Set(C.map(x=>x.requirement_id))],E={data:[]};
+  const[q,m,d,k,p]=await Promise.all([
+    rq.length?db.from('requirements').select('*').in('id',rq):E,
+    ids.length?db.from('messages').select('conversation_id,sender_id,body,created_at').in('conversation_id',ids).order('created_at',{ascending:false}).limit(300):E,
+    ids.length?db.from('deal_ready').select('conversation_id').in('conversation_id',ids):E,
+    ids.length?db.from('deals').select('conversation_id,status').in('conversation_id',ids):E,
+    db.from('requirements').select('id',{count:'exact',head:true}).eq('user_id',user.id)]);
+  const last={},dc={},ks={};
+  (m.data||[]).forEach(x=>{if(!last[x.conversation_id])last[x.conversation_id]=x});
+  (d.data||[]).forEach(x=>dc[x.conversation_id]=(dc[x.conversation_id]||0)+1);
+  (k.data||[]).forEach(x=>ks[x.conversation_id]=x.status);
+  const mine=C.filter(x=>x.party_b===user.id),
+    un=C.filter(x=>{const l=last[x.id];return l&&l.sender_id!==user.id&&Date.parse(l.created_at)>seen(x.id)});
+  const S=(n,e,h)=>`<div><b style="font-size:1.6rem;color:var(--g2)">${n}</b><br>${t(e,h)}</div>`;
+  $('st').innerHTML=S(p.count||0,'My posts','मेरी पोस्ट')+S(mine.length,'Chats on my posts','मेरी पोस्ट पर चैट')+S(mine.filter(x=>dc[x.id]>=2).length,'Both agreed','दोनों सहमत')+S(mine.filter(x=>ks[x.id]==='confirmed').length,'Deals confirmed (paid)','डील पक्की (भुगतान)')+S(un.length,'Unread','अनपढ़े');
+  $('mc').innerHTML=C.length?C.map(x=>{const r=(q.data||[]).find(y=>y.id===x.requirement_id),l=last[x.id];
+    return r?`<button class="btn gh" style="display:block;width:100%;text-align:left;margin:0 0 8px" data-chat="${esc(x.id)}">${un.includes(x)?'🔴 ':''}${ks[x.id]==='confirmed'?'✅ ':dc[x.id]>=2?'🤝 ':''}<b>${esc(r.product)}</b> · ${x.party_b===user.id?t('someone is interested','कोई इच्छुक है'):t('you messaged','आपने मैसेज किया')}<br><span style="opacity:.7;font-weight:400">${l?esc(l.body.slice(0,50)):t('No messages yet','अभी मैसेज नहीं')}</span></button>`:''}).join(''):`<p class="mt">${t('No chats yet.','अभी कोई चैट नहीं।')}</p>`;
+  $('mc').onclick=e=>{const b=e.target.closest('[data-chat]');if(!b)return;const x=C.find(y=>y.id===b.dataset.chat);show(x,(q.data||[]).find(y=>y.id===x.requirement_id))};
+  document.title=(un.length?'('+un.length+') ':'')+'Shreni Global Logistics';
+  $('nd').textContent='🔔 '+un.length;$('nd').classList.toggle('x',!un.length);
+  if(un.length>pu)toast();pu=un.length}
 if(db)db.auth.getSession().then(({data})=>setUser(data.session?data.session.user:null));
 </script>
 </body>
