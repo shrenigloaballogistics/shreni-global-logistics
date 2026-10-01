@@ -46,6 +46,8 @@ textarea{min-height:76px}.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px
 .ck{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;color:var(--mu);margin-top:12px}.ck input{width:auto;margin-top:4px}
 footer{border-top:1px solid var(--ln);padding:22px 5vw;text-align:center;color:var(--mu);font-size:.84rem}
 a{color:var(--g2)}
+.pe{position:relative}.pe input{padding-right:44px}.pe button{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:0;border:0;color:var(--mu);cursor:pointer;padding:8px;line-height:0}.pe button:hover,.pe button:focus-visible{color:var(--g2)}
+.ac{position:relative}#as{position:absolute;left:0;right:0;top:100%;z-index:5;background:var(--n2);border:1px solid var(--ln);border-radius:6px;max-height:220px;overflow:auto}#as button{display:block;width:100%;text-align:left;background:0;border:0;color:var(--iv);padding:9px 10px;font:inherit;font-size:.88rem;cursor:pointer;border-bottom:1px solid var(--ln)}#as button:hover,#as button:focus-visible{background:var(--n)}
 </style>
 </head>
 <body data-l="en">
@@ -152,8 +154,9 @@ a{color:var(--g2)}
     <div id="s1">
       <div id="rf">
         <label for="rN">Full name / पूरा नाम</label><input id="rN" autocomplete="name">
-        <label for="rA">Address / पता</label><input id="rA" autocomplete="street-address">
+        <label for="rA">Address / पता</label><div class="ac"><input id="rA" autocomplete="off" placeholder="Start typing / लिखना शुरू करें"><div id="as" class="x"></div></div><div class="mt" id="aV"></div>
         <label for="rC">Country / देश</label><input id="rC" list="cl" autocomplete="country-name">
+        <label for="rZ">Pincode / पिनकोड</label><input id="rZ" autocomplete="postal-code" maxlength="12">
         <label for="rP">Mobile / मोबाइल (coming soon / जल्द)</label><input id="rP" disabled>
         <div class="ck"><input type="checkbox" id="rT"><label for="rT" style="margin:0">I agree to the <a href="#terms" id="tl">Terms</a> / मैं शर्तों से सहमत हूँ</label></div>
       </div>
@@ -186,10 +189,34 @@ const $=i=>document.getElementById(i);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let L='en',mode='register',pend=null,pw0=null,user=null,all=[];
 const t=(e,h)=>L==='hi'?h:e;
+const EY='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',EO='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+['rW','np'].forEach(id=>{const i=$(id),w=document.createElement('div'),b=document.createElement('button');w.className='pe';b.type='button';b.innerHTML=EY;b.setAttribute('aria-label','Show password');
+i.parentNode.insertBefore(w,i);w.append(i,b);
+b.onclick=()=>{const h=i.type==='password';i.type=h?'text':'password';b.innerHTML=h?EO:EY;b.setAttribute('aria-label',h?'Hide password':'Show password')}});
+const CC={};let geoOK=false,geoCC='',gT=null,gC=0;
+const lbl=p=>[...new Set([p.name,[p.street,p.housenumber].filter(Boolean).join(' '),p.district,p.city,p.state,p.postcode,p.country].filter(Boolean))].join(', ');
+$('rA').oninput=()=>{geoOK=false;geoCC='';$('aV').textContent='';clearTimeout(gT);const q=$('rA').value.trim();if(q.length<3){$('as').classList.add('x');return}
+  gT=setTimeout(async()=>{const n=++gC;try{
+    const r=await fetch('https://photon.komoot.io/api/?limit=6&lang=en&q='+encodeURIComponent(q));const j=await r.json();if(n!==gC)return;
+    const f=(j.features||[]).map(x=>x.properties).filter(p=>p.country);
+    $('as').innerHTML=f.map((p,i)=>`<button type="button" data-i="${i}">${esc(lbl(p))}</button>`).join('')||`<div class="mt" style="padding:8px">${t('No match. Add more detail.','कोई मेल नहीं। और जानकारी डालें।')}</div>`;
+    $('as').classList.remove('x');
+    $('as').onclick=e=>{const b=e.target.closest('button');if(!b)return;const p=f[b.dataset.i];
+      $('rA').value=lbl(p);$('rC').value=p.country;if(p.postcode&&!$('rZ').value)$('rZ').value=p.postcode;
+      geoOK=true;geoCC=(p.countrycode||'').toUpperCase();$('as').classList.add('x');$('aV').textContent=t('✓ Place found','✓ जगह मिल गई')};
+  }catch(e){}},450)};
+document.addEventListener('click',e=>{if(!e.target.closest('.ac'))$('as').classList.add('x')});
+async function pinOK(code,pin){
+  try{const r=await fetch('https://api.zippopotam.us/'+code.toLowerCase()+'/'+encodeURIComponent(pin));if(r.ok)return true;
+    const j=await(await fetch('https://photon.komoot.io/api/?limit=10&q='+encodeURIComponent(pin))).json();
+    const n=x=>String(x||'').replace(/\s/g,'').toUpperCase();
+    return (j.features||[]).some(f=>(f.properties.countrycode||'').toUpperCase()===code&&n(f.properties.postcode)===n(pin));
+  }catch(e){return null}
+}
 $('yr').textContent=new Date().getFullYear();
 $('lg').onclick=()=>{L=L==='en'?'hi':'en';document.body.dataset.l=L;document.documentElement.lang=L;$('lg').textContent=L==='en'?'हिंदी':'English';render()};
 (()=>{try{const d=new Intl.DisplayNames(['en'],{type:'region'}),s=new Set(),A='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-for(const a of A)for(const b of A){try{const n=d.of(a+b);if(n&&n!==a+b&&n!=='Unknown Region')s.add(n)}catch(e){}}
+for(const a of A)for(const b of A){try{const n=d.of(a+b);if(n&&n!==a+b&&n!=='Unknown Region'){s.add(n);CC[n]=a+b}}catch(e){}}
 $('cl').innerHTML=[...s].sort().map(n=>`<option value="${esc(n)}">`).join('')}catch(e){}})();
 const ms=(el,m,er)=>{el.textContent=m;el.className='ms'+(er?' er':'')};
 function setMode(m){mode=m;pend=null;pw0=null;$('rW').value='';$('oc').value='';$('rf').classList.toggle('x',m!=='register');$('pw').classList.toggle('x',m!=='register'&&m!=='login');$('lk').classList.toggle('x',m!=='login');$('rW').autocomplete=m==='register'?'new-password':'current-password';$('tR').className='btn'+(m==='register'?'':' gh');$('tL').className='btn'+(m!=='register'?'':' gh');$('s1').classList.remove('x');$('s2').classList.add('x');$('s3').classList.add('x');setSO();ms($('aM'),'')}
@@ -216,6 +243,15 @@ $('sO').onclick=async()=>{
     pend={full_name:$('rN').value.trim(),address:$('rA').value.trim(),country:$('rC').value.trim(),email};
     if(!pend.full_name||!pend.address||!pend.country)return ms($('aM'),t('Fill name, address and country.','नाम, पता और देश भरें।'),1);
     if(!$('rT').checked)return ms($('aM'),t('Please accept the Terms.','कृपया शर्तें स्वीकार करें।'),1);
+    if(!geoOK)return ms($('aM'),t('Pick your address from the suggestions list.','सुझावों की सूची में से अपना पता चुनें।'),1);
+    const pin=$('rZ').value.trim(),cn=CC[$('rC').value.trim()],cd=cn||geoCC;
+    if(!pin)return ms($('aM'),t('Enter your pincode.','पिनकोड डालें।'),1);
+    if(!cd)return ms($('aM'),t('Choose your country from the list.','सूची में से देश चुनें।'),1);
+    if(geoCC&&cn&&geoCC!==cn)return ms($('aM'),t('Address and country do not match.','पता और देश मेल नहीं खाते।'),1);
+    $('sO').disabled=true;ms($('aM'),t('Checking pincode...','पिनकोड जाँच रहे हैं...'));const ok=await pinOK(cd,pin);$('sO').disabled=false;
+    if(ok===null)return ms($('aM'),t('Could not check pincode. Try again.','पिनकोड जाँच नहीं हो पाई। फिर कोशिश करें।'),1);
+    if(!ok)return ms($('aM'),t('This pincode was not found for the selected country.','यह पिनकोड इस देश में नहीं मिला।'),1);
+    pend.pincode=pin;
   }
   $('sO').disabled=true;ms($('aM'),t('Sending...','भेज रहे हैं...'));
   const{error}=await db.auth.signInWithOtp({email,options:{shouldCreateUser:mode==='register'}});
