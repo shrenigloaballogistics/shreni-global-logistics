@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://jrjbohwnioarjcjwaqul.supabase.co https://photon.komoot.io https://api.postalpincode.in; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shreni Global Logistics</title>
@@ -206,12 +209,14 @@ $('rA').oninput=()=>{geoOK=false;geoCC='';$('aV').textContent='';clearTimeout(gT
       geoOK=true;geoCC=(p.countrycode||'').toUpperCase();$('as').classList.add('x');$('aV').textContent=t('✓ Place found','✓ जगह मिल गई')};
   }catch(e){}},450)};
 document.addEventListener('click',e=>{if(!e.target.closest('.ac'))$('as').classList.add('x')});
+const NP=new Set('AE QA HK MO AG BS BZ FJ GY JM KI SR TT UG ZW YE SY SD SS AO BW CD CG ER GQ GM KM LY ML MR NR RW ST SL SB TG TO TV VU'.split(' '));
+const PAT={IN:/^[1-9]\d{5}$/,US:/^\d{5}(-\d{4})?$/,CA:/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,GB:/^[A-Za-z]{1,2}\d[A-Za-z\d]?\s?\d[A-Za-z]{2}$/,AU:/^\d{4}$/,NZ:/^\d{4}$/,DE:/^\d{5}$/,FR:/^\d{5}$/,IT:/^\d{5}$/,ES:/^\d{5}$/,NL:/^\d{4}\s?[A-Za-z]{2}$/,BE:/^\d{4}$/,CH:/^\d{4}$/,AT:/^\d{4}$/,LI:/^\d{4}$/,LU:/^\d{4}$/,SE:/^\d{3}\s?\d{2}$/,NO:/^\d{4}$/,DK:/^\d{4}$/,FI:/^\d{5}$/,IS:/^\d{3}$/,PL:/^\d{2}-\d{3}$/,PT:/^\d{4}-\d{3}$/,IE:/^[A-Za-z]\d{2}\s?[A-Za-z\d]{4}$/,CZ:/^\d{3}\s?\d{2}$/,SK:/^\d{3}\s?\d{2}$/,HU:/^\d{4}$/,RO:/^\d{6}$/,BG:/^\d{4}$/,GR:/^\d{3}\s?\d{2}$/,HR:/^\d{5}$/,SI:/^\d{4}$/,RS:/^\d{5,6}$/,EE:/^\d{5}$/,LV:/^(LV-)?\d{4}$/,LT:/^(LT-)?\d{5}$/,UA:/^\d{5}$/,RU:/^\d{6}$/,TR:/^\d{5}$/,JP:/^\d{3}-?\d{4}$/,CN:/^\d{6}$/,KR:/^\d{5}$/,TW:/^\d{3}(\d{2,3})?$/,SG:/^\d{6}$/,MY:/^\d{5}$/,TH:/^\d{5}$/,ID:/^\d{5}$/,PH:/^\d{4}$/,VN:/^\d{5,6}$/,KH:/^\d{5,6}$/,MM:/^\d{5}$/,LK:/^\d{5}$/,NP:/^\d{5}$/,BD:/^\d{4}$/,PK:/^\d{5}$/,AF:/^\d{4}$/,IR:/^\d{5}-?\d{5}$/,IQ:/^\d{5}$/,IL:/^\d{5}(\d{2})?$/,JO:/^\d{5}$/,KW:/^\d{5}$/,BH:/^\d{3,4}$/,OM:/^\d{3}$/,SA:/^\d{5}(-\d{4})?$/,EG:/^\d{5}$/,MA:/^\d{5}$/,DZ:/^\d{5}$/,TN:/^\d{4}$/,NG:/^\d{6}$/,KE:/^\d{5}$/,TZ:/^\d{5}$/,ET:/^\d{4}$/,ZA:/^\d{4}$/,BR:/^\d{5}-?\d{3}$/,MX:/^\d{5}$/,AR:/^([A-Za-z]\d{4}[A-Za-z]{3}|\d{4})$/,CL:/^\d{7}$/,CO:/^\d{6}$/,PE:/^\d{5}$/};
+const pinFmt=(c,p)=>PAT[c]?PAT[c].test(p):/^[A-Za-z0-9][A-Za-z0-9 -]{1,10}$/.test(p);
 async function pinOK(code,pin){
-  try{const r=await fetch('https://api.zippopotam.us/'+code.toLowerCase()+'/'+encodeURIComponent(pin));if(r.ok)return true;
-    const j=await(await fetch('https://photon.komoot.io/api/?limit=10&q='+encodeURIComponent(pin))).json();
-    const n=x=>String(x||'').replace(/\s/g,'').toUpperCase();
-    return (j.features||[]).some(f=>(f.properties.countrycode||'').toUpperCase()===code&&n(f.properties.postcode)===n(pin));
-  }catch(e){return null}
+  try{const j=await(await fetch('https://api.postalpincode.in/pincode/'+encodeURIComponent(pin))).json();
+    if(j&&j[0]){if(j[0].Status==='Success')return true;if(j[0].Status==='Error'||j[0].Status==='404')return false}
+  }catch(e){}
+  return null;
 }
 $('yr').textContent=new Date().getFullYear();
 $('lg').onclick=()=>{L=L==='en'?'hi':'en';document.body.dataset.l=L;document.documentElement.lang=L;$('lg').textContent=L==='en'?'हिंदी':'English';render()};
@@ -245,12 +250,12 @@ $('sO').onclick=async()=>{
     if(!$('rT').checked)return ms($('aM'),t('Please accept the Terms.','कृपया शर्तें स्वीकार करें।'),1);
     if(!geoOK)return ms($('aM'),t('Pick your address from the suggestions list.','सुझावों की सूची में से अपना पता चुनें।'),1);
     const pin=$('rZ').value.trim(),cn=CC[$('rC').value.trim()],cd=cn||geoCC;
-    if(!pin)return ms($('aM'),t('Enter your pincode.','पिनकोड डालें।'),1);
     if(!cd)return ms($('aM'),t('Choose your country from the list.','सूची में से देश चुनें।'),1);
     if(geoCC&&cn&&geoCC!==cn)return ms($('aM'),t('Address and country do not match.','पता और देश मेल नहीं खाते।'),1);
-    $('sO').disabled=true;ms($('aM'),t('Checking pincode...','पिनकोड जाँच रहे हैं...'));const ok=await pinOK(cd,pin);$('sO').disabled=false;
-    if(ok===null)return ms($('aM'),t('Could not check pincode. Try again.','पिनकोड जाँच नहीं हो पाई। फिर कोशिश करें।'),1);
-    if(!ok)return ms($('aM'),t('This pincode was not found for the selected country.','यह पिनकोड इस देश में नहीं मिला।'),1);
+    if(!pin&&!NP.has(cd))return ms($('aM'),t('Enter your pincode.','पिनकोड डालें।'),1);
+    if(pin&&!pinFmt(cd,pin))return ms($('aM'),t('Pincode format is wrong for this country.','इस देश के लिए पिनकोड का फ़ॉर्मेट गलत है।'),1);
+    if(pin&&cd==='IN'){$('sO').disabled=true;ms($('aM'),t('Checking pincode...','पिनकोड जाँच रहे हैं...'));const ok=await pinOK(cd,pin);$('sO').disabled=false;
+      if(ok===false)return ms($('aM'),t('This pincode does not exist in India.','यह पिनकोड भारत में मौजूद नहीं है।'),1)}
     pend.pincode=pin;
   }
   $('sO').disabled=true;ms($('aM'),t('Sending...','भेज रहे हैं...'));
