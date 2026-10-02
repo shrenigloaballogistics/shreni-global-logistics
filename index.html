@@ -348,9 +348,9 @@ async function rf(){if(!cv)return;
   if(me&&both&&!me.paid&&!ppOn)payBtn();
   if(me&&me.paid)$('pp').innerHTML=''}
 function payBtn(){ppOn=true;
-  const go=()=>paypal.Buttons({createOrder:async()=>(await fn('create',{conversation_id:cv.id})).id,
+  const go=()=>paypal.Buttons({createOrder:async()=>{try{return(await fn('create',{conversation_id:cv.id})).id}catch(e){ms($('dMs'),e.message,1);throw e}},
     onApprove:async d=>{try{await fn('capture',{order_id:d.orderID});ms($('dMs'),t('Payment verified.','भुगतान सत्यापित हुआ।'))}catch(e){ms($('dMs'),e.message,1)}rf()},
-    onError:()=>ms($('dMs'),t('Payment failed or cancelled.','भुगतान नहीं हुआ।'),1)}).render('#pp');
+    onError:()=>{if(!$('dMs').textContent)ms($('dMs'),t('Payment failed or cancelled.','भुगतान नहीं हुआ।'),1)}}).render('#pp');
   if(window.paypal)return go();const s=document.createElement('script');s.src='https://www.paypal.com/sdk/js?client-id='+PPID+'&currency=USD';s.onload=go;document.head.appendChild(s)}
 $('ag').onclick=async()=>{const{error}=await db.from('deal_ready').insert({conversation_id:cv.id,user_id:user.id});if(error)return ms($('dMs'),error.message,1);rf()};
 $('cS').onclick=async()=>{const b=$('cI').value.trim();if(!b)return;$('cI').value='';const{error}=await db.from('messages').insert({conversation_id:cv.id,sender_id:user.id,body:b});if(error)ms($('dMs'),error.message,1);rf()};
